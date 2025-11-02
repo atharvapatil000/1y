@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at 50% 50%, #2c0b3d 0%, #1a0b2e 50%, #0f0a1a 100%);
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            perspective: 2000px;
+            color: #fff;
+        }
+
+        .scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .gift-box {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-box:hover {
+            transform: scale(1.05) rotateY(5deg);
+        }
+
+        .box {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            transform-style: preserve-3d;
+        }
+
+        .box-face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 4px solid;
+            box-shadow: 
+                0 0 35px rgba(255, 255, 255, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+            backface-visibility: hidden;
+            border-radius: 8px;
+        }
+
+        .front  { transform: translateZ(100px); }
+        .back   { transform: rotateY(180deg) translateZ(100px); }
+        .right  { transform: rotateY(90deg) translateZ(100px); }
+        .left   { transform: rotateY(-90deg) translateZ(100px); }
+        .top    { 
+            transform: rotateX(90deg) translateZ(100px);
+            border-radius: 8px;
+        }
+        .bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+        .lid {
+            position: absolute;
+            width: 210px;
+            height: 210px;
+            top: -5px;
+            left: -5px;
+            transform-style: preserve-3d;
+            transform-origin: top center;
+            transition: transform 1.4s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 10;
+        }
+
+        .lid-face {
+            position: absolute;
+            width: 210px;
+            height: 210px;
+            border: 5px solid;
+            box-shadow: 
+                0 0 45px rgba(255, 255, 255, 0.3),
+                inset 0 0 30px rgba(255, 255, 255, 0.2);
+            backface-visibility: hidden;
+            border-radius: 10px;
+        }
+
+        .lid-top { 
+            transform: rotateX(90deg) translateZ(105px);
+        }
+        .lid-front { transform: translateZ(105px); }
+
+        .ribbon {
+            position: absolute;
+            background: linear-gradient(45deg, #f8b500, #f39c12);
+            box-shadow: 0 0 20px rgba(248, 181, 0, 0.6);
+            border-radius: 4px;
+        }
+
+        .ribbon-v {
+            width: 50px;
+            height: 240px;
+            left: 75px;
+            top: -20px;
+            transform: translateZ(106px);
+        }
+
+        .ribbon-h {
+            width: 240px;
+            height: 50px;
+            left: -20px;
+            top: 75px;
+            transform: translateZ(106px);
+        }
+
+        .bow {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            left: 60px;
+            top: -40px;
+            transform: translateZ(120px);
+            z-index: 11;
+        }
+
+        .bow-left, .bow-right {
+            position: absolute;
+            width: 60px;
+            height: 75px;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 70%, 0% 100%);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .bow-left { transform: rotate(-35deg); }
+        .bow-right { transform: rotate(35deg) scaleX(-1); }
+
+        .bow-center {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #f8b500, #f39c12);
+            border-radius: 50%;
+            top: 24px;
+            left: 24px;
+            box-shadow: 0 0 20px rgba(248, 181, 0, 0.8);
+        }
+
+        /* Box 1 - Rose Romance */
+        .box1 .box-face {
+            background: linear-gradient(135deg, #d63031, #e84393);
+            border-color: #c2185b;
+        }
+        .box1 .top {
+            background: linear-gradient(135deg, #fd79a8, #fdcb6e);
+            border-color: #e84393;
+        }
+        .box1 .lid-face {
+            background: linear-gradient(135deg, #fd79a8, #e056fd);
+            border-color: #c2185b;
+        }
+        .box1 .bow-left, .box1 .bow-right {
+            background: linear-gradient(45deg, #e84393, #fd79a8);
+        }
+
+        /* Box 2 - Royal Purple */
+        .box2 .box-face {
+            background: linear-gradient(135deg, #6a1b9a, #9c27b0);
+            border-color: #7b1fa2;
+        }
+        .box2 .top {
+            background: linear-gradient(135deg, #ba68c8, #ce93d8);
+            border-color: #9c27b0;
+        }
+        .box2 .lid-face {
+            background: linear-gradient(135deg, #ba68c8, #ab47bc);
+            border-color: #7b1fa2;
+        }
+        .box2 .bow-left, .box2 .bow-right {
+            background: linear-gradient(45deg, #9c27b0, #ba68c8);
+        }
+
+        /* Box 3 - Midnight Blue (Suspense) */
+        .box3 .box-face {
+            background: linear-gradient(135deg, #1a237e, #3949ab);
+            border-color: #283593;
+        }
+        .box3 .top {
+            background: linear-gradient(135deg, #5c6bc0, #7986cb);
+            border-color: #3949ab;
+        }
+        .box3 .lid-face {
+            background: linear-gradient(135deg, #5c6bc0, #3f51b5);
+            border-color: #283593;
+        }
+        .box3 .bow-left, .box3 .bow-right {
+            background: linear-gradient(45deg, #3949ab, #5c6bc0);
+        }
+
+        /* Open Animation */
+        .gift-box.open .lid {
+            transform: rotateX(-135deg) translateY(-60px);
+        }
+
+        .gift-box.open {
+            transform: scale(0.6) translateY(180px);
+            opacity: 0;
+            transition: all 1.2s ease 0.3s;
+        }
+
+        /* Full-Screen Love Letter */
+        .letter-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8);
+            transition: all 1.6s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+        }
+
+        .letter-container.show {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .letter {
+            width: 90%;
+            max-width: 650px;
+            max-height: 85vh;
+            background: linear-gradient(145deg, #fdfbfb 0%, #f8f5f5 100%);
+            border-radius: 28px;
+            padding: 55px 65px;
+            box-shadow: 
+                0 35px 90px rgba(0, 0, 0, 0.45),
+                0 0 70px rgba(255, 255, 255, 0.25),
+                inset 0 0 45px rgba(255, 255, 255, 0.7);
+            position: relative;
+            overflow: hidden;
+            border: 12px solid transparent;
+            animation: letterGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes letterGlow {
+            0% { 
+                box-shadow: 0 35px 90px rgba(0,0,0,0.45), 0 0 70px rgba(255,255,255,0.25), inset 0 0 45px rgba(255,255,255,0.7);
+            }
+            100% { 
+                box-shadow: 0 45px 110px rgba(0,0,0,0.55), 0 0 100px rgba(255,255,255,0.35), inset 0 0 55px rgba(255,255,255,0.9);
+            }
+        }
+
+        .letter::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .letter-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .letter-header h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 58px;
+            background: linear-gradient(45deg, #e84393, #fd79a8, #f8b500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            text-shadow: 0 3px 15px rgba(232, 67, 147, 0.3);
+            line-height: 1.2;
+        }
+
+        .letter-header .subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 23px;
+            color: #8e44ad;
+            font-style: italic;
+            margin-top: 12px;
+            opacity: 0.9;
+        }
+
+        .letter-body {
+            font-size: 19px;
+            line-height: 2;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .letter-body p {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .letter-body p::first-letter {
+            font-size: 34px;
+            color: #e84393;
+            font-weight: bold;
+        }
+
+        .signature {
+            text-align: right;
+            font-family: 'Dancing Script', cursive;
+            font-size: 38px;
+            color: #e84393;
+            margin-top: 45px;
+            position: relative;
+        }
+
+        .signature::before {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            right: 0;
+            width: 140px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #fd79a8, transparent);
+        }
+
+        /* Final Suspense Reveal */
+        .final-reveal {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .mystery-gift {
+            width: 180px;
+            height: 180px;
+            margin: 30px auto;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="40" y="60" width="120" height="80" rx="15" fill="%23394ab"/><rect x="70" y="40" width="60" height="40" rx="10" fill="%231a237e"/><path d="M70 80 Q100 60 130 80" stroke="%23f8b500" stroke-width="8" fill="none"/><circle cx="100" cy="100" r="40" fill="%23e84393" opacity="0.3"/><circle cx="100" cy="100" r="25" fill="%23fd79a8" opacity="0.2"/><text x="100" y="105" text-anchor="middle" font-family="Arial" font-size="60" fill="%23fff" opacity="0.1">?</text></svg>') no-repeat center;
+            background-size: contain;
+            animation: pulseGlow 2s ease-in-out infinite;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .final-message {
+            font-size: 26px;
+            font-weight: bold;
+            color: #e84393;
+            margin: 25px 0;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .countdown {
+            font-size: 22px;
+            color: #8e44ad;
+            font-style: italic;
+            margin: 15px 0;
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 50;
+            animation: floatUp 3s ease-out forwards;
+        }
+
+        .particle-heart {
+            width: 28px;
+            height: 28px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e84393"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .particle-rose {
+            width: 32px;
+            height: 32px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="%23e84393"/><circle cx="35" cy="40" r="15" fill="%23fd79a8"/><circle cx="65" cy="40" r="15" fill="%23fd79a8"/><circle cx="40" cy="60" r="15" fill="%23fd79a8"/><circle cx="60" cy="60" r="15" fill="%23fd79a8"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .particle-star {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffd700, #fff);
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        .particle-chain {
+            width: 30px;
+            height: 40px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140"><circle cx="50" cy="20" r="12" fill="%23aaa"/><circle cx="50" cy="50" r="12" fill="%23aaa"/><circle cx="50" cy="80" r="12" fill="%23aaa"/><circle cx="50" cy="110" r="12" fill="%23aaa"/><circle cx="50" cy="120" r="15" fill="%23ccc"/><circle cx="50" cy="120" r="8" fill="%23888"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-450px) rotate(360deg) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        /* Click hint */
+        .click-hint {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(253, 121, 168, 0.8);
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 1.5px;
+            animation: pulse 2s infinite;
+            white-space: nowrap;
+            font-family: 'Playfair Display', serif;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+        }
+
+        /* Background elements */
+        .bg-heart {
+            position: absolute;
+            color: rgba(253, 121, 168, 0.12);
+            font-size: 45px;
+            pointer-events: none;
+            animation: drift 18s linear infinite;
+        }
+
+        @keyframes drift {
+            0% { transform: translateX(-150px) translateY(100vh) rotate(0deg); }
+            100% { transform: translateX(100vw) translateY(-150px) rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .scene { gap: 30px; padding: 10px; }
+            .gift-box { width: 160px; height: 160px; }
+            .box, .box-face, .lid, .lid-face { 
+                width: 160px !important; 
+                height: 160px !important; 
+            }
+            .lid { width: 170px; height: 170px; top: -5px; left: -5px; }
+            .ribbon-v { width: 40px; height: 200px; left: 60px; }
+            .ribbon-h { width: 200px; height: 40px; top: 60px; }
+            .bow { width: 65px; height: 65px; left: 47px; top: -33px; }
+            .letter { padding: 35px 40px; }
+            .letter-header h1 { font-size: 48px; }
+            .mystery-gift { width: 140px; height: 140px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene" id="scene">
+        <!-- Box 1 - Hint: Rose (Your Favorite Flower) -->
+        <div class="gift-box box1" data-letter="1" id="giftBox1">
+            <div class="box">
+                <div class="box-face front"></div>
+                <div class="box-face back"></div>
+                <div class="box-face right"></div>
+                <div class="box-face left"></div>
+                <div class="box-face top"></div>
+                <div class="box-face bottom"></div>
+            </div>
+            <div class="lid">
+                <div class="lid-face lid-top"></div>
+                <div class="lid-face lid-front"></div>
+                <div class="ribbon ribbon-v"></div>
+                <div class="ribbon ribbon-h"></div>
+            </div>
+            <div class="bow">
+                <div class="bow-left"></div>
+                <div class="bow-right"></div>
+                <div class="bow-center"></div>
+            </div>
+            <div class="click-hint">Open me first</div>
+        </div>
+
+        <!-- Box 2 - Hint: Keychain (Extremely Subtle) -->
+        <div class="gift-box box2" data-letter="2" id="giftBox2">
+            <div class="box">
+                <div class="box-face front"></div>
+                <div class="box-face back"></div>
+                <div class="box-face right"></div>
+                <div class="box-face left"></div>
+                <div class="box-face top"></div>
+                <div class="box-face bottom"></div>
+            </div>
+            <div class="lid">
+                <div class="lid-face lid-top"></div>
+                <div class="lid-face lid-front"></div>
+                <div class="ribbon ribbon-v"></div>
+                <div class="ribbon ribbon-h"></div>
+            </div>
+            <div class="bow">
+                <div class="bow-left"></div>
+                <div class="bow-right"></div>
+                <div class="bow-center"></div>
+            </div>
+            <div class="click-hint">Second clue...</div>
+        </div>
+
+        <!-- Box 3 - Final Suspense (No Reveal) -->
+        <div class="gift-box box3" data-letter="3" id="giftBox3">
+            <div class="box">
+                <div class="box-face front"></div>
+                <div class="box-face back"></div>
+                <div class="box-face right"></div>
+                <div class="box-face left"></div>
+                <div class="box-face top"></div>
+                <div class="box-face bottom"></div>
+            </div>
+            <div class="lid">
+                <div class="lid-face lid-top"></div>
+                <div class="lid-face lid-front"></div>
+                <div class="ribbon ribbon-v"></div>
+                <div class="ribbon ribbon-h"></div>
+            </div>
+            <div class="bow">
+                <div class="bow-left"></div>
+                <div class="bow-right"></div>
+                <div class="bow-center"></div>
+            </div>
+            <div class="click-hint">The final mystery...</div>
+        </div>
+    </div>
+
+    <!-- Full-Screen Letter -->
+    <div class="letter-container" id="letterContainer">
+        <div class="letter" id="letterContent">
+            <!-- Content filled by JS -->
+        </div>
+    </div>
+
+    <script>
+        const giftBoxes = document.querySelectorAll('.gift-box');
+        const letterContainer = document.getElementById('letterContainer');
+        const letterContent = document.getElementById('letterContent');
+        const scene = document.getElementById('scene');
+        
+        let currentOpenBox = null;
+        let openedBoxes = new Set();
+
+        const letters = {
+            1: {
+                title: "Forever in Bloom",
+                subtitle: "First piece of the puzzle",
+                body: [
+                    "In a garden of dreams, one bloom stands eternal, delicate, passionate, and forever in season.",
+                    "Its petals hold the color of sunrise and sunset, a symbol of love that never fades.",
+                    "You once said it was your favorite... and soon, it will appear in a way you never expected."
+                ],
+                signature: "With a petal of love"
+            },
+            2: {
+                title: "The Hidden Companion",
+                subtitle: "Second clue of the puzzle",
+                body: [
+                    "Some treasures are small enough to slip into your pocket, yet strong enough to carry memories.",
+                    "It follows you silently, clinking softly with every step, a tiny guardian of your daily adventures.",
+                    "Not just an object but a quiet promise that I’m always with you, wherever you go."
+                ],
+                signature: "Getting closer..."
+            },
+            3: {
+                isFinal: true,
+                title: "The Final Piece",
+                subtitle: "Your gift is almost here...",
+                body: `
+                    <div class="final-reveal">
+                        <div class="mystery-gift"></div>
+                        <div class="final-message">Close your eyes...</div>
+                        <p class="countdown">You'll know what it is in just a few moments.</p>
+                        <p>Turn around slowly... <strong>don't peek yet.</strong></p>
+                        <p>Are you ready?</p>
+                        <p><em>Now open your eyes, your surprise is right behind you.</em></p>
+                    </div>
+                `,
+                signature: "With all my heart"
+            }
+        };
+
+        giftBoxes.forEach(box => {
+            box.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                const boxId = this.dataset.letter;
+                
+                if (currentOpenBox === this) return;
+                
+                if (currentOpenBox) {
+                    closeCurrentLetter();
+                    setTimeout(() => openBox(this), 400);
+                } else {
+                    openBox(this);
+                }
+            });
+        });
+
+        function openBox(box) {
+            const letterId = box.dataset.letter;
+            currentOpenBox = box;
+            openedBoxes.add(letterId);
+            
+            updateHints();
+            
+            box.classList.add('open');
+            
+            document.querySelectorAll('.click-hint').forEach(h => h.style.opacity = '0');
+            
+            createParticles(box, letterId);
+            
+            setTimeout(() => {
+                displayLetter(letterId);
+                letterContainer.classList.add('show');
+                if (letterId === '3') createFinalSuspense();
+            }, 1200);
+        }
+
+        function displayLetter(id) {
+            const data = letters[id];
+            if (data.isFinal) {
+                letterContent.innerHTML = `
+                    <div class="letter-header">
+                        <h1>${data.title}</h1>
+                        <div class="subtitle">${data.subtitle}</div>
+                    </div>
+                    ${data.body}
+                    <div class="signature">${data.signature}</div>
+                `;
+            } else {
+                letterContent.innerHTML = `
+                    <div class="letter-header">
+                        <h1>${data.title}</h1>
+                        <div class="subtitle">${data.subtitle}</div>
+                    </div>
+                    <div class="letter-body">
+                        ${data.body.map(p => `<p>${p}</p>`).join('')}
+                    </div>
+                    <div class="signature">${data.signature}</div>
+                `;
+            }
+        }
+
+        function updateHints() {
+            const hint1 = document.querySelector('#giftBox1 .click-hint');
+            if (openedBoxes.has('1')) hint1.textContent = 'Opened';
+            else hint1.textContent = 'Open me first';
+            
+            const hint2 = document.querySelector('#giftBox2 .click-hint');
+            if (openedBoxes.has('2')) hint2.textContent = 'Opened';
+            else if (openedBoxes.has('1')) hint2.textContent = 'Now open me!';
+            else hint2.textContent = 'Second clue...';
+            
+            const hint3 = document.querySelector('#giftBox3 .click-hint');
+            if (openedBoxes.has('3')) hint3.textContent = 'Surprise Awaits!';
+            else if (openedBoxes.has('1') && openedBoxes.has('2')) hint3.textContent = 'OPEN NOW!';
+            else hint3.textContent = 'The final mystery...';
+        }
+
+        function closeCurrentLetter() {
+            letterContainer.classList.remove('show');
+            setTimeout(() => {
+                if (currentOpenBox) {
+                    currentOpenBox.classList.remove('open');
+                    document.querySelectorAll('.click-hint').forEach(h => h.style.opacity = '0.8');
+                    currentOpenBox = null;
+                }
+                document.querySelectorAll('.particle, .bg-heart').forEach(p => p.remove());
+            }, 600);
+        }
+
+        letterContainer.addEventListener('click', function(e) {
+            if (currentOpenBox) {
+                closeCurrentLetter();
+            }
+        });
+
+        function createParticles(box, boxId) {
+            const rect = box.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            let particleTypes = ['heart', 'rose'];
+            if (boxId === '2') particleTypes = ['heart', 'chain'];
+            if (boxId === '3') particleTypes = ['heart', 'rose', 'star', 'chain'];
+            
+            for (let i = 0; i < (boxId === '3' ? 70 : 40); i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+                    particle.className = `particle particle-${type}`;
+                    
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 50 + Math.random() * 100;
+                    const x = centerX + Math.cos(angle) * distance - window.innerWidth / 2;
+                    const y = centerY + Math.sin(angle) * distance - window.innerHeight / 2;
+                    
+                    particle.style.left = (window.innerWidth / 2 + x) + 'px';
+                    particle.style.top = (window.innerHeight / 2 + y) + 'px';
+                    
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 3000);
+                }, i * (boxId === '3' ? 25 : 50));
+            }
+        }
+
+        function createFinalSuspense() {
+            // Dramatic heartbeat sound effect (visual)
+            const pulse = document.createElement('div');
+            pulse.style.position = 'fixed';
+            pulse.style.top = '50%';
+            pulse.style.left = '50%';
+            pulse.style.width = '300px';
+            pulse.style.height = '300px';
+            pulse.style.background = 'radial-gradient(circle, rgba(232,67,147,0.3) 0%, transparent 70%)';
+            pulse.style.borderRadius = '50%';
+            pulse.style.transform = 'translate(-50%, -50%) scale(0)';
+            pulse.style.zIndex = '999';
+            pulse.style.animation = 'heartbeat 1.5s infinite';
+            document.body.appendChild(pulse);
+
+            setTimeout(() => pulse.remove(), 5000);
+
+            // Add heartbeat animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes heartbeat {
+                    0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; }
+                    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.9; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Background stars
+        function createStars() {
+            for (let i = 0; i < 70; i++) {
+                const star = document.createElement('div');
+                star.style.position = 'absolute';
+                star.style.width = Math.random() * 2.5 + 'px';
+                star.style.height = star.style.width;
+                star.style.background = '#fff';
+                star.style.borderRadius = '50%';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.opacity = Math.random() * 0.7 + 0.3;
+                star.style.animation = `twinkle ${2 + Math.random() * 5}s infinite`;
+                star.style.pointerEvents = 'none';
+                
+                document.body.appendChild(star);
+            }
+        }
+
+        const twinkleStyle = document.createElement('style');
+        twinkleStyle.textContent = `
+            @keyframes twinkle {
+                0%, 100% { opacity: 0.3; transform: scale(1); }
+                50% { opacity: 1; transform: scale(2); }
+            }
+        `;
+        document.head.appendChild(twinkleStyle);
+
+        createStars();
+    </script>
+</body>
+</html>
